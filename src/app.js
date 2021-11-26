@@ -3,6 +3,11 @@ const http = require('http');
 const requestListener = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
+  req.on('error', (err) => {
+    res.writeHead(500);
+    res.end(JSON.stringify(err))
+  });
+
   switch (req.url) {
     case '/':
       res.writeHead(200);
