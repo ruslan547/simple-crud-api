@@ -14,12 +14,14 @@ const requestListener = (req, res) => {
       break;
     default:
       res.writeHead(404);
-      res.end(JSON.stringify({ error: 'Not found' }));
+      res.end(JSON.stringify({ message: 'Not found' }));
   }
 };
 
 const server = http.createServer(requestListener);
 
 server.listen(3000, (err) => {
-  err ? console.log(err) : console.log(`listening port 3000`);
+  err
+    ? console.error(err)
+    : console.log(`listening port 3000`);
 });
