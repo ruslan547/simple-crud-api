@@ -1,5 +1,8 @@
 const http = require('http');
 
+const { getParams } = require('./utils');
+const { personController } = require('./components')
+
 const requestListener = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
 
@@ -8,14 +11,13 @@ const requestListener = (req, res) => {
     res.end(JSON.stringify(err))
   });
 
-  switch (req.url) {
-    case '/':
+  switch (getParams(req.url)[0]) {
+    case '':
       res.writeHead(200);
       res.end(JSON.stringify({ data: 'simple-crud-api' }));
       break;
-    case '/person':
-      res.writeHead(200);
-      res.end('person');
+    case 'person':
+      personController(req, res);
       break;
     default:
       res.writeHead(404);
