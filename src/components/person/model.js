@@ -1,39 +1,39 @@
-import { v4 as uuid } from 'uuid';
+const { v4: uuid } = require('uuid');
 
 class Person {
-  constructor(name = '', age = 0, hobbies = []) {
-    this._id = uuid();
-    this._name = name;
-    this._age = age;
-    this._hobbies = hobbies;
+  constructor({ name = '', age = 0, hobbies = [] }) {
+    this.id = uuid();
+    this.name = name;
+    this.age = age;
+    this.hobbies = hobbies;
   }
 
   getId() {
-    return this._id;
+    return this.id;
   }
 
   getName() {
-    return this._name;
+    return this.name;
   }
 
   setName(name) {
-    this._name = name;
+    this.name = name;
   }
 
   getAge() {
-    return this._age;
+    return this.age;
   }
 
   setAge(age) {
-    this._age = age;
+    this.age = age;
   }
 
   getHobbies() {
-    return [...this._hobbies];
+    return [...this.hobbies];
   }
 
   setHobbies(hobbies) {
-    this._hobbies = [...hobbies];
+    this.hobbies = [...hobbies];
   }
 }
 

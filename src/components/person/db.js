@@ -8,7 +8,8 @@ class PersonDb {
   }
 
   getById(personId) {
-    return this.persons.find(({ id }) => id === personId) ?? null;
+    return this.persons
+      .find(item => item.getId() === personId) ?? null;
   }
 
   push(person) {

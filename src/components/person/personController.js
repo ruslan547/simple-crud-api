@@ -1,7 +1,8 @@
-const { getParams } = require('../../utils');
+const { getParams, validatePersonParams } = require('../../utils');
 const {
   getAll,
-  getById
+  getById,
+  create
 } = require('./personService');
 
 exports.personController = (req, res) => {
@@ -23,6 +24,26 @@ exports.personController = (req, res) => {
         res.writeHeader(200);
         res.end(JSON.stringify(getAll()));
       }
+      break;
+    case 'POST':
+      req.on('data', (chunk) => {
+        const data = JSON.parse(chunk.toString());
+
+        if (validatePersonParams(data)) {
+          const person = create(data);
+
+          if (person) {
+            res.writeHeader(201);
+            res.end(JSON.stringify(person));
+          } else {
+            res.writeHeader(500);
+            res.end(JSON.stringify({ message: 'Not created' }))
+          }
+        } else {
+          res.writeHeader(400);
+          res.end(JSON.stringify({ message: 'Incorrect data' }))
+        }
+      });
       break;
   }
 };

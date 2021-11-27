@@ -1,5 +1,7 @@
 const { getParams } = require('./paramsUtils');
+const validationUtils = require('./validationUtils');
 
 module.exports = {
-  getParams
+  getParams,
+  ...validationUtils
 };
