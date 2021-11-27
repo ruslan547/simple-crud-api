@@ -1,7 +1,11 @@
+require('dotenv').config()
+
 const http = require('http');
 
 const { getParams } = require('./utils');
-const { personController } = require('./components')
+const { personController } = require('./components');
+
+const { PORT } = process.env;
 
 const requestListener = (req, res) => {
   res.setHeader('Content-Type', 'application/json');
@@ -27,8 +31,8 @@ const requestListener = (req, res) => {
 
 const server = http.createServer(requestListener);
 
-server.listen(3000, (err) => {
+server.listen(PORT, (err) => {
   err
     ? console.error(err)
-    : console.log(`listening port 3000`);
+    : console.log(`listening port ${PORT}`);
 });
