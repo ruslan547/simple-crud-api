@@ -26,7 +26,13 @@ const requestListener = (req, res) => {
       res.end(JSON.stringify({ data: 'simple-crud-api' }));
       break;
     case 'person':
-      personController(req, res);
+      try {
+        personController(req, res);
+      } catch (err) {
+        res.writeHeader(500);
+        res.end(JSON.stringify({ message: err.message }));
+      }
+
       break;
     default:
       res.writeHead(404);
