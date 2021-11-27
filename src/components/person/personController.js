@@ -1,4 +1,8 @@
-const { getParams, validatePersonParams } = require('../../utils');
+const {
+  getParams,
+  validatePersonParams,
+  validateUuid
+} = require('../../utils');
 const {
   getAll,
   getById,
@@ -13,14 +17,19 @@ exports.personController = (req, res) => {
   switch (req.method) {
     case 'GET':
       if (personId) {
-        const person = getById(personId);
+        if (validateUuid(personId)) {
+          const person = getById(personId);
 
-        if (person) {
-          res.writeHeader(200);
-          res.end(JSON.stringify(person))
+          if (person) {
+            res.writeHeader(200);
+            res.end(JSON.stringify(person));
+          } else {
+            res.writeHeader(404);
+            res.end(JSON.stringify({ message: 'Not found' }));
+          }
         } else {
-          res.writeHeader(404);
-          res.end(JSON.stringify({ message: 'Not found' }))
+          res.writeHeader(400);
+          res.end(JSON.stringify({ message: 'id invalid' }));
         }
       } else {
         res.writeHeader(200);
@@ -29,7 +38,14 @@ exports.personController = (req, res) => {
       break;
     case 'POST':
       req.on('data', (chunk) => {
-        const data = JSON.parse(chunk.toString());
+        let data;
+
+        try {
+          data = JSON.parse(chunk.toString());
+        } catch (err) {
+          res.writeHeader(400);
+          res.end(JSON.stringify({ message: 'Incorrect data' }))
+        }
 
         if (validatePersonParams(data)) {
           const person = create(data);
@@ -48,35 +64,53 @@ exports.personController = (req, res) => {
       });
       break;
     case 'PUT':
-      req.on('data', (chunk) => {
-        const data = JSON.parse(chunk.toString());
+      if (validateUuid(personId)) {
+        req.on('data', (chunk) => {
+          let data;
 
-        if (validatePersonParams(data)) {
-          const person = update(personId, data);
-
-          if (person) {
-            res.writeHeader(200);
-            res.end(JSON.stringify(person));
-          } else {
-            res.writeHeader(404);
-            res.end(JSON.stringify({ message: 'Not found' }))
+          try {
+            data = JSON.parse(chunk.toString());
+          } catch (err) {
+            res.writeHeader(400);
+            res.end(JSON.stringify({ message: 'Incorrect data' }))
           }
-        } else {
-          res.writeHeader(400);
-          res.end(JSON.stringify({ message: 'Incorrect data' }))
-        }
-      });
+
+          if (validatePersonParams(data)) {
+            const person = update(personId, data);
+
+            if (person) {
+              res.writeHeader(200);
+              res.end(JSON.stringify(person));
+            } else {
+              res.writeHeader(404);
+              res.end(JSON.stringify({ message: 'Not found' }))
+            }
+          } else {
+            res.writeHeader(400);
+            res.end(JSON.stringify({ message: 'Incorrect data' }))
+          }
+        });
+      } else {
+        res.writeHeader(400);
+        res.end(JSON.stringify({ message: 'id invalid' }));
+      }
       break;
     case 'DELETE':
       const deletedPerson = deleteById(personId);
 
-      if (deletedPerson) {
-        res.writeHeader(200);
-        res.end(JSON.stringify(deletedPerson));
+      if (validateUuid(personId)) {
+        if (deletedPerson) {
+          res.writeHeader(204);
+          res.end(JSON.stringify(deletedPerson));
+        } else {
+          res.writeHeader(404);
+          res.end(JSON.stringify({ message: 'Not found' }));
+        }
       } else {
-        res.writeHeader(404);
-        res.end(JSON.stringify({ message: 'Not found' }));
+        res.writeHeader(400);
+        res.end(JSON.stringify({ message: 'id invalid' }));
       }
+
       break;
     default:
       res.writeHeader(405);
