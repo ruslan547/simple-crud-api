@@ -3,7 +3,8 @@ const {
   getAll,
   getById,
   create,
-  update
+  update,
+  deleteById
 } = require('./personService');
 
 exports.personController = (req, res) => {
@@ -54,8 +55,8 @@ exports.personController = (req, res) => {
           const person = update(personId, data);
 
           if (person) {
-            res.writeHeader(204);
-            res.end();
+            res.writeHeader(200);
+            res.end(JSON.stringify(person));
           } else {
             res.writeHeader(404);
             res.end(JSON.stringify({ message: 'Not found' }))
@@ -66,5 +67,19 @@ exports.personController = (req, res) => {
         }
       });
       break;
+    case 'DELETE':
+      const deletedPerson = deleteById(personId);
+
+      if (deletedPerson) {
+        res.writeHeader(200);
+        res.end(JSON.stringify(deletedPerson));
+      } else {
+        res.writeHeader(404);
+        res.end(JSON.stringify({ message: 'Not found' }));
+      }
+      break;
+    default:
+      res.writeHeader(405);
+      res.end();
   }
 };
