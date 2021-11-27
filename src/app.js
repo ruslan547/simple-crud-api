@@ -12,7 +12,12 @@ const requestListener = (req, res) => {
 
   req.on('error', (err) => {
     res.writeHead(500);
-    res.end(JSON.stringify(err))
+    res.end(JSON.stringify(err));
+  });
+
+  res.on('error', (err) => {
+    res.writeHead(500);
+    res.end(JSON.stringify(err));
   });
 
   switch (getParams(req.url)[0]) {
