@@ -47,3 +47,5 @@ server.listen(PORT, (err) => {
     ? console.error(err)
     : console.log(`listening port ${PORT}`);
 });
+
+module.exports = server;
